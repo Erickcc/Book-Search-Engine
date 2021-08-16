@@ -11,9 +11,8 @@ const resolvers = {
           throw new AuthenticationError("No user found");
         }
         return foundUser;
-      } else {
-          throw new AuthenticationError("No user found");
       }
+      throw new AuthenticationError("No user found");
     },
   },
 
