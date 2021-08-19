@@ -44,13 +44,14 @@ const resolvers = {
       throw new AuthenticationError("Could not save the book");
     },
     removeBook: async (parent, { bookId }, context) => {
+      console.log("Inside removebook mutation");
       if(context.user){
-        const updatedUser = await User.findOneAndUpdate(
+        const user = await User.findOneAndUpdate(
           { _id: context.user._id },
           { $pull: { savedBooks: { bookId: bookId } } },
           { new: true }
         );
-        return res.json(updatedUser);
+        return user;
       };
       throw new AuthenticationError("Could not delete the book");
     },
