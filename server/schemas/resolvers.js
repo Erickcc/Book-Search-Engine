@@ -31,21 +31,22 @@ const resolvers = {
       const token = signToken(user);
       return { token, user };
     },
-    saveBook: async (parent, {bookInput }, context) => {
+    saveBook: async (parent, {book }, context) => {
+      console.log("Inside savebook mutation");
       if(context.user) {
         const user = await User.findOneAndUpdate(
-          { _id: context.user_id },
-          { $push: { savedBooks: bookInput } },
+          { _id: context.user._id },
+          { $push: { savedBooks: book } },
           { new: true }   
         );
         return user;
-      };
+      }
       throw new AuthenticationError("Could not save the book");
     },
     removeBook: async (parent, { bookId }, context) => {
       if(context.user){
         const updatedUser = await User.findOneAndUpdate(
-          { _id: context.user_id },
+          { _id: context.user._id },
           { $pull: { savedBooks: { bookId: bookId } } },
           { new: true }
         );
