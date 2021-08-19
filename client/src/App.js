@@ -48,9 +48,9 @@ function App() {
             <Route exact path="/">
               <SearchBooks />
             </Route>
-            {/* <Route exact path="/saved">
+            <Route exact path="/saved">
               <SavedBooks />
-            </Route> */}
+            </Route>
             <Route>
               <NotFound />
             </Route>
