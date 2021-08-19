@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 
+// Page that appears when the url provided doesnt match any url defined in the router
 function NotFound() {
   let location = useLocation();
   return (

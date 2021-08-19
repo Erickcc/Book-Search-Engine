@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-
+// Definy querys based on the server's typedefs queries
 export const QUERY_GET_ME = gql`
   query me {
     me {

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Jumbotron, Container, Col, Form, Button, Card, CardColumns } from 'react-bootstrap';
 
 import Auth from '../utils/auth';
-// import { searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
 
 import { useMutation } from '@apollo/client';
@@ -16,7 +15,7 @@ const SearchBooks = () => {
   // create state to hold saved bookId values
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
   // Create mutation for the savebook typedef
-  const [saveBook, { error, data }] = useMutation(SAVE_BOOK);
+  const [saveBook, { error }] = useMutation(SAVE_BOOK);
 
   // set up useEffect hook to save `savedBookIds` list to localStorage on component unmount
   // learn more here: https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup
@@ -27,22 +26,20 @@ const SearchBooks = () => {
   // create method to search for books and set state on form submit
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-
+    // If the searchinput is empty, return false
     if (!searchInput) {
       return false;
     }
-
     try {
-      // const response = await searchGoogleBooks(searchInput);
-
+      // Append the search input to the api url
       const searchGoogleBooks = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${searchInput}`);
-
+      // If there was any problem in the api call send an error
       if (!searchGoogleBooks.ok) {
         throw new Error('something went wrong!');
       }
-
+      // parse the api information to a json object
       const { items } = await searchGoogleBooks.json();
-
+      // map the previous json obj into an object with our desired format and store it in a variable
       const bookData = items.map((book) => ({
         bookId: book.id,
         authors: book.volumeInfo.authors || ['No author to display'],
@@ -50,10 +47,12 @@ const SearchBooks = () => {
         description: book.volumeInfo.description,
         image: book.volumeInfo.imageLinks?.thumbnail || '',
       }));
-
+      // change the state with the bookdata
       setSearchedBooks(bookData);
+      // Clean the box input
       setSearchInput('');
     } catch (err) {
+      console.log(error);
       console.error(err);
     }
   };
@@ -65,11 +64,11 @@ const SearchBooks = () => {
     console.log(bookToSave);
     // get token
     const token = Auth.loggedIn() ? Auth.getToken() : null;
-
+    // If token is false, user is not logged in
     if (!token) {
       return false;
     }
-
+    // Save a new book
     try {
       console.log("trying to save");
       const {data} = await saveBook({
@@ -78,6 +77,7 @@ const SearchBooks = () => {
         }
       })
       // if book successfully saves to user's account, save book id to state
+      // console.log(data);
       setSavedBookIds([...savedBookIds, bookToSave.bookId]);
     } catch (err) {
       console.error(err);

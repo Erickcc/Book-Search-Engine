@@ -1,5 +1,5 @@
 // see SignupForm.js for comments
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 
 // import { loginUser } from '../utils/API';
@@ -15,7 +15,7 @@ const LoginForm = () => {
   const [showAlert, setShowAlert] = useState(false);
 
   // Setup mutation for logging in
-  const [login, { error, data }] = useMutation(LOGIN_USER);
+  const [login, { error }] = useMutation(LOGIN_USER);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -24,7 +24,7 @@ const LoginForm = () => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    console.log(userFormData);
+    // console.log(userFormData);
     // check if form has everything (as per react-bootstrap docs)
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
@@ -33,13 +33,14 @@ const LoginForm = () => {
     }
 
     try {
-      console.log("Trying");
+      console.log("Trying to login");
       const {data} = await login({
         variables: {...userFormData},
       });
       Auth.login(data.login.token);
     } catch (err) {
       console.error(err);
+      console.log(error);
       setShowAlert(true);
     }
 
